@@ -81,7 +81,7 @@ sudo unzip /usr/share/phpmyadmin.zip -d /usr/share/ >> $script_log_file 2>/dev/n
 sudo mv /usr/share/phpMyAdmin-5.2.1-all-languages /usr/share/phpmyadmin >> $script_log_file 2>/dev/null
 sudo rm /usr/share/phpmyadmin.zip >> $script_log_file 2>/dev/null
 sudo touch /usr/share/phpmyadmin/config.inc.php
-sudo cat << EOT >> /usr/share/phpmyadmin/config.inc.php 
+sudo tee /usr/share/phpmyadmin/config.inc.php > /dev/null <<EOF
 <?php
 declare(strict_types=1);
 \$cfg['blowfish_secret'] = '';
