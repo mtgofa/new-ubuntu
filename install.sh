@@ -5,6 +5,7 @@ green_color="\033[1;32m"
 no_color="\033[0m"
 current_user=$(logname)
 
+
 echo $no_color"PREPAIRE INSTALLING";
 rm -rf /var/lib/dpkg/lock >> $script_log_file 2>/dev/null
 rm -rf /var/lib/dpkg/lock-frontend >> $script_log_file 2>/dev/null
@@ -12,6 +13,7 @@ rm -rf /var/cache/apt/archives/lock >> $script_log_file 2>/dev/null
 sudo apt-get update  >> $script_log_file 2>/dev/null
 echo $green_color"[SUCCESS]";
 echo $green_color"[######################################]";
+
 
 echo $no_color"REMOVING APACHE";
 sudo apt-get purge apache -y >> $script_log_file 2>/dev/null
@@ -21,14 +23,16 @@ sudo kill -9 $(sudo lsof -t -i:443) >> $script_log_file 2>/dev/null
 echo $green_color"[SUCCESS]";
 echo $green_color"[######################################]";
 
+
 echo $no_color"INSTALLING NGINX";
 sudo apt-get update   >> $script_log_file 2>/dev/null
 sudo apt install nginx -y >> $script_log_file 2>/dev/null
+sudo sed -i "/sites-enabled/a server_names_hash_bucket_size 64;\nclient_max_body_size 1000M;\nproxy_connect_timeout   3600;\nproxy_send_timeout      3600;\nproxy_read_timeout      3600;\nsend_timeout            3600;\nclient_body_timeout     3600;\nfastcgi_read_timeout 3600s;" /etc/nginx/nginx.conf >> $script_log_file 2>/dev/null
 echo $green_color"[SUCCESS]";
 echo $green_color"[######################################]";
 
 
-for version in 8.2 8.1 7.4;
+for version in 8.2 8.1 8.0 7.4;
 do
     echo $no_color"INSTALLING PHP "$version;
     sudo apt-get update  >> $script_log_file 2>/dev/null
@@ -49,7 +53,6 @@ do
     sudo service php$version-fpm restart >> $script_log_file 2>/dev/null
     echo $green_color"[SUCCESS]";
     echo $green_color"[######################################]";
-
 done
 
 
@@ -71,10 +74,45 @@ sudo service nginx restart >> $script_log_file 2>/dev/null
 echo $green_color"[SUCCESS]";
 echo $green_color"[######################################]";
 
+
+echo $no_color"PREPAIRE SSL CERTIFICATE";
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt -subj "/C=EG/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com"
+echo $green_color"[SUCCESS]";
+echo $green_color"[######################################]";
+
+
+echo $no_color"Instaling phpmyadmin";
+sudo apt install unzip -y >> $script_log_file 2>/dev/null
+sudo wget -O /usr/share/phpmyadmin.zip https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip >> $script_log_file 2>/dev/null
+sudo unzip /usr/share/phpmyadmin.zip -d /usr/share/ >> $script_log_file 2>/dev/null
+sudo mv /usr/share/phpMyAdmin-5.2.1-all-languages /usr/share/phpmyadmin >> $script_log_file 2>/dev/null
+sudo rm /usr/share/phpmyadmin.zip >> $script_log_file 2>/dev/null
+cat << EOT >> /usr/share/phpmyadmin/config.inc.php 
+<?php
+declare(strict_types=1);
+\$cfg['blowfish_secret'] = '';
+\$cfg['ExecTimeLimit'] = 0;
+\$i = 0;
+\$i++;
+\$cfg['Servers'][\$i]['auth_type'] = 'config';
+\$cfg['Servers'][\$i]['host'] = 'localhost';
+\$cfg['Servers'][\$i]['user'] = 'root';
+\$cfg['Servers'][\$i]['password'] = '';
+\$cfg['Servers'][\$i]['compress'] = false;
+\$cfg['Servers'][\$i]['AllowNoPassword'] = true;
+
+\$cfg['UploadDir'] = '';
+\$cfg['SaveDir'] = '';
+\$cfg['TempDir'] = '/tmp';
+EOT
+echo $green_color"[SUCCESS]";
+echo $green_color"[######################################]";
+exit
+
+
 echo $no_color"CREATING NGINX CONFIGURATION";
 sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled >> $script_log_file 2>/dev/null
 sudo ln -s /etc/nginx/sites-available /etc/nginx/sites-enabled >> $script_log_file 2>/dev/null
-
 sudo touch /etc/nginx/conf.d/default.conf >> $script_log_file 2>/dev/null
 sudo bash -c "echo 'server {
     listen 80 default_server;
@@ -117,7 +155,6 @@ sudo bash -c "echo 'server {
 
 sudo chown -R ${USER}:${USER} /var/www >> $script_log_file 2>/dev/null
 sudo chmod -R 755 /var/www >> $script_log_file 2>/dev/null
-
 echo $green_color"[SUCCESS]";
 echo $green_color"[######################################]";
 
@@ -161,6 +198,20 @@ sudo curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash - >> $script
 sudo apt install nodejs -y >> $script_log_file 2>/dev/null
 echo $green_color"[SUCCESS]";
 echo $green_color"[######################################]";
+
+
+echo $no_color"PREPAIRE bashrc";
+cat << EOT >> /home/$current_user/.bashrc 
+alias composer7.4='/usr/bin/php7.4 /usr/local/bin/composer'
+alias composer8.0='/usr/bin/php8.0 /usr/local/bin/composer'
+alias composer8.1='/usr/bin/php8.1 /usr/local/bin/composer'
+alias composer8.2='/usr/bin/php8.2 /usr/local/bin/composer'
+alias commit='git add . && git commit '
+alias push='git push origin'
+alias pull='git pull origin'
+alias checkout='git checkout'
+alias merge='git merge'
+EOT
 
 
 echo $no_color"FINALIZE INSTALLING";
