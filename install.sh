@@ -98,7 +98,7 @@ declare(strict_types=1);
 \$cfg['UploadDir'] = '';
 \$cfg['SaveDir'] = '';
 \$cfg['TempDir'] = '/tmp';
-EOT
+EOF
 printf $green_color" [SUCCESS]\n";
 
 
