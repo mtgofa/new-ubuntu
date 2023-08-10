@@ -175,15 +175,15 @@ sudo apt-get update   >> $script_log_file 2>/dev/null
 sudo apt install git -y >> $script_log_file 2>/dev/null
 printf $green_color" [SUCCESS]\n";
 
-printf "# "$no_color"INSTALLING NPM";
-sudo apt install npm -y >> $script_log_file 2>/dev/null
-printf $green_color" [SUCCESS]\n";
-
 printf "# "$no_color"INSTALLING nodejs";
+sudo apt install curl -y >> $script_log_file 2>/dev/null
 sudo curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash - >> $script_log_file 2>/dev/null
 sudo apt install nodejs -y >> $script_log_file 2>/dev/null
 printf $green_color" [SUCCESS]\n";
 
+printf "# "$no_color"INSTALLING NPM";
+sudo apt install npm -y >> $script_log_file 2>/dev/null
+printf $green_color" [SUCCESS]\n";
 
 printf "# "$no_color"PREPAIRE bashrc";
 cat << EOT >> /home/$current_user/.bashrc 
@@ -197,6 +197,14 @@ alias pull='git pull origin'
 alias checkout='git checkout'
 alias merge='git merge'
 EOT
+
+printf "# "$no_color"INSTALLING Chrome";
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' >> $script_log_file 2>/dev/null
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -  >> $script_log_file 2>/dev/null
+sudo apt update  >> $script_log_file 2>/dev/null
+sudo apt install google-chrome-stable -y >> $script_log_file 2>/dev/null
+printf $green_color" [SUCCESS]\n";
+
 
 printf "# "$no_color"FINALIZE INSTALLING";
 sudo apt-get autoremove -y >> $script_log_file 2>/dev/null
