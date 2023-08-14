@@ -167,6 +167,16 @@ sudo mysql > /dev/null << EOF
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
 FLUSH PRIVILEGES;
 EOF
+
+sudo tee /etc/mysql/my.cnf > /dev/null <<EOF
+[mysqld]
+innodb_buffer_pool_size = 4G
+innodb_log_buffer_size = 256M
+innodb_log_file_size = 1G
+innodb_write_io_threads = 16
+innodb_flush_log_at_trx_commit = 0
+innodb_doublewrite = 0
+EOF
 printf $green_color" [SUCCESS]\n";
 
 
