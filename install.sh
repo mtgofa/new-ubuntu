@@ -5,26 +5,6 @@ green_color="\033[1;32m"
 no_color="\033[0m"
 current_user=$(logname)
 
-    
-for version in 8.0 7.4;
-do
-    printf "# "$no_color"INSTALLING PHP "$version;
-    sudo apt install php$version-fpm -y >> $script_log_file 2>/dev/null
-    printf $green_color" [SUCCESS]\n";
-
-    printf "# "$no_color"INSTALLING PHP EXTENSIONS";
-    sudo apt install php$version openssl php$version-fpm php$version-common php$version-curl php$version-mbstring php$version-mysql php$version-xml php$version-zip php$version-gd php$version-cli php$version-xml php$version-imagick php$version-xml php$version-intl php-mysql -y >> $script_log_file 2>/dev/null
-    printf $green_color" [SUCCESS]\n";
-
-    printf "# "$no_color"CHANGING PHP FPM UPLOAD VALUES";
-    sudo sed -i 's/post_max_size = 8M/post_max_size = 1000M/g' /etc/php/$version/fpm/php.ini >> $script_log_file 2>/dev/null
-    sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1000M/g' /etc/php/$version/fpm/php.ini >> $script_log_file 2>/dev/null
-    sudo sed -i 's/max_execution_time = 30/max_execution_time = 300/g' /etc/php/$version/fpm/php.ini >> $script_log_file 2>/dev/null
-    sudo sed -i 's/memory_limit = 128/memory_limit = 12800/g' /etc/php/$version/fpm/php.ini >> $script_log_file 2>/dev/null
-    sudo sed -i 's/user = www-data/user = '$current_user'/g' /etc/php/$version/fpm/pool.d/www.conf >> $script_log_file 2>/dev/null
-    sudo service php$version-fpm restart >> $script_log_file 2>/dev/null
-    printf $green_color" [SUCCESS]\n";
-done
 
 
 printf "# "$no_color"INSTALLING COMPOSER";
