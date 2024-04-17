@@ -25,10 +25,16 @@ wget -q https://raw.githubusercontent.com/mtgofa/new-ubuntu/master/install.sh -O
 
 ```
 
+```php
+wget -q https://raw.githubusercontent.com/mtgofa/new-ubuntu/master/create-account.sh; sudo chmod +x create-account.sh ; sudo ./create-account.sh taluq-3taa
+
+```
 ### How To Debug LIVE
 
 ```php
 tail -f script_log.log
 ```
+
+
 
 ### 
