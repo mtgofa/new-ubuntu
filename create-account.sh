@@ -6,8 +6,8 @@ ownership=${3:-'test'}
 dir=${4:-'public'}
 domain=$username.$ownership
 
-root="/var/www/$username/$dir"
-parent="/var/www/$username"
+root="/home/$USER/www/$username/$dir"
+parent="/home/$USER/www/$username"
 block="/etc/nginx/sites-available/$username"
 
 # # Create the Document Root directory
