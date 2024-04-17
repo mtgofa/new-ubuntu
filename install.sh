@@ -5,36 +5,10 @@ green_color="\033[1;32m"
 no_color="\033[0m"
 current_user=$(logname)
 
-printf "# "$no_color"PREPAIRE INSTALLING";
-rm -rf /var/lib/dpkg/lock >> $script_log_file 2>/dev/null
-rm -rf /var/lib/dpkg/lock-frontend >> $script_log_file 2>/dev/null
-rm -rf /var/cache/apt/archives/lock >> $script_log_file 2>/dev/null
-sudo apt-get update  >> $script_log_file 2>/dev/null
-printf $green_color" [SUCCESS]\n";
-
-
-printf "# "$no_color"REMOVING APACHE";
-sudo apt-get purge apache -y >> $script_log_file 2>/dev/null
-sudo apt-get purge apache* -y >> $script_log_file 2>/dev/null
-sudo kill -9 $(sudo lsof -t -i:80) >> $script_log_file 2>/dev/null
-sudo kill -9 $(sudo lsof -t -i:443) >> $script_log_file 2>/dev/null
-printf $green_color" [SUCCESS]\n";
-
-
-printf "# "$no_color"INSTALLING NGINX";
-sudo apt-get update   >> $script_log_file 2>/dev/null
-sudo apt install nginx -y >> $script_log_file 2>/dev/null
-sudo sed -i "/sites-enabled/a server_names_hash_bucket_size 64;\nclient_max_body_size 1000M;\nproxy_connect_timeout   3600;\nproxy_send_timeout      3600;\nproxy_read_timeout      3600;\nsend_timeout            3600;\nclient_body_timeout     3600;\nfastcgi_read_timeout 3600s;" /etc/nginx/nginx.conf >> $script_log_file 2>/dev/null
-printf $green_color" [SUCCESS]\n";
-
-
-for version in 8.2 8.1 8.0 7.4;
+    
+for version in 8.0 7.4;
 do
     printf "# "$no_color"INSTALLING PHP "$version;
-    sudo apt-get update  >> $script_log_file 2>/dev/null
-    sudo apt install lsb-release ca-certificates apt-transport-https software-properties-common -y >> $script_log_file 2>/dev/null
-    sudo add-apt-repository ppa:ondrej/php -y >> $script_log_file 2>/dev/null
-    sudo apt-get update  >> $script_log_file 2>/dev/null
     sudo apt install php$version-fpm -y >> $script_log_file 2>/dev/null
     printf $green_color" [SUCCESS]\n";
 
@@ -42,7 +16,7 @@ do
     sudo apt install php$version openssl php$version-fpm php$version-common php$version-curl php$version-mbstring php$version-mysql php$version-xml php$version-zip php$version-gd php$version-cli php$version-xml php$version-imagick php$version-xml php$version-intl php-mysql -y >> $script_log_file 2>/dev/null
     printf $green_color" [SUCCESS]\n";
 
-    printf "# "$green_color"CHANGING PHP FPM UPLOAD VALUES";
+    printf "# "$no_color"CHANGING PHP FPM UPLOAD VALUES";
     sudo sed -i 's/post_max_size = 8M/post_max_size = 1000M/g' /etc/php/$version/fpm/php.ini >> $script_log_file 2>/dev/null
     sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 1000M/g' /etc/php/$version/fpm/php.ini >> $script_log_file 2>/dev/null
     sudo sed -i 's/max_execution_time = 30/max_execution_time = 300/g' /etc/php/$version/fpm/php.ini >> $script_log_file 2>/dev/null
