@@ -123,7 +123,7 @@ sudo bash -c "echo 'server {
     }
 
     location ~ \.php$ {
-        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
         fastcgi_param SCRIPT_FILENAME \$fastcgi_script_name;
         include fastcgi_params;
         include snippets/fastcgi-php.conf;
@@ -135,7 +135,7 @@ sudo bash -c "echo 'server {
         location ~ ^/phpmyadmin/(.+\.php)$ {
             try_files \$uri =404;
             root /usr/share/;
-            fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+            fastcgi_pass unix:/run/php/php8.3-fpm.sock;
             fastcgi_index index.php;
             fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
             include /etc/nginx/fastcgi_params;
@@ -157,17 +157,17 @@ sudo systemctl start nginx >> $script_log_file 2>/dev/null
 sudo service nginx restart >> $script_log_file 2>/dev/null
 printf $green_color" [SUCCESS]\n";
 
-#if ! [ -x "$(command -v mysql)"  >> $script_log_file 2>/dev/null ]; then
-#printf "# "$no_color"INSTALLING MYSQL";
-#sudo apt-get -qq install mysql-server  >> $script_log_file 2>/dev/null
-#printf $green_color" [SUCCESS]\n";
-#fi
+if ! [ -x "$(command -v mysql)"  >> $script_log_file 2>/dev/null ]; then
+printf "# "$no_color"INSTALLING MYSQL";
+sudo apt-get -qq install mysql-server  >> $script_log_file 2>/dev/null
+printf $green_color" [SUCCESS]\n";
+fi
 
-#printf "# "$no_color"Configure MYSQL";
-#sudo mysql > /dev/null << EOF 
-#ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
-#FLUSH PRIVILEGES;
-#EOF
+printf "# "$no_color"Configure MYSQL";
+sudo mysql > /dev/null << EOF 
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+FLUSH PRIVILEGES;
+EOF
 
 sudo tee /etc/mysql/my.cnf > /dev/null <<EOF
 [mysqld]
