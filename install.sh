@@ -34,7 +34,7 @@ sudo add-apt-repository ppa:ondrej/php -y >> $script_log_file 2>/dev/null
 sudo apt-get update  >> $script_log_file 2>/dev/null
 printf $green_color" [SUCCESS]\n";
 
-for version in 8.2 8.1 8.0 7.4;
+for version in 8.3 8.2;
 do
     printf "# "$no_color"INSTALLING PHP "$version;
     sudo apt install php$version-fpm -y >> $script_log_file 2>/dev/null
@@ -77,9 +77,9 @@ printf $green_color" [SUCCESS]\n";
 
 printf "# "$no_color"Instaling phpmyadmin";
 sudo apt install unzip -y >> $script_log_file 2>/dev/null
-sudo wget -O /usr/share/phpmyadmin.zip https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip >> $script_log_file 2>/dev/null
+sudo wget -O /usr/share/phpmyadmin.zip https://files.phpmyadmin.net/phpMyAdmin/5.2.2/phpMyAdmin-5.2.2-all-languages.zip >> $script_log_file 2>/dev/null
 sudo unzip /usr/share/phpmyadmin.zip -d /usr/share/ >> $script_log_file 2>/dev/null
-sudo mv /usr/share/phpMyAdmin-5.2.1-all-languages /usr/share/phpmyadmin >> $script_log_file 2>/dev/null
+sudo mv /usr/share/phpMyAdmin-5.2.2-all-languages /usr/share/phpmyadmin >> $script_log_file 2>/dev/null
 sudo rm /usr/share/phpmyadmin.zip >> $script_log_file 2>/dev/null
 sudo touch /usr/share/phpmyadmin/config.inc.php
 sudo tee /usr/share/phpmyadmin/config.inc.php > /dev/null <<EOF
@@ -202,6 +202,7 @@ alias composer7.4='/usr/bin/php7.4 /usr/local/bin/composer'
 alias composer8.0='/usr/bin/php8.0 /usr/local/bin/composer'
 alias composer8.1='/usr/bin/php8.1 /usr/local/bin/composer'
 alias composer8.2='/usr/bin/php8.2 /usr/local/bin/composer'
+alias composer8.3='/usr/bin/php8.3 /usr/local/bin/composer'
 alias commit='git add . && git commit '
 alias push='git push origin'
 alias pull='git pull origin'
