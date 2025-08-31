@@ -114,7 +114,7 @@ sudo bash -c "echo 'server {
     ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
     ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
 
-    root /var/www/html;
+    root /home/$current_user/www/html;
     index index.html index.htm index.nginx-debian.html index.php;
     server_name _;
 
@@ -203,11 +203,13 @@ alias composer8.0='/usr/bin/php8.0 /usr/local/bin/composer'
 alias composer8.1='/usr/bin/php8.1 /usr/local/bin/composer'
 alias composer8.2='/usr/bin/php8.2 /usr/local/bin/composer'
 alias composer8.3='/usr/bin/php8.3 /usr/local/bin/composer'
+alias composer8.4='/usr/bin/php8.4 /usr/local/bin/composer'
 alias commit='git add . && git commit '
 alias push='git push origin'
 alias pull='git pull origin'
 alias checkout='git checkout'
 alias merge='git merge'
+alias art='php artisan'
 EOT
 
 printf "# "$no_color"INSTALLING Chrome";
