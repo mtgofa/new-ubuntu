@@ -5,9 +5,10 @@ version=${2:-'8.3'}
 ownership=${3:-'test'}
 dir=${4:-'public'}
 domain=$username.$ownership
+current_user=$(logname)
 
-root="/home/$USER/www/$username/$dir"
-parent="/home/$USER/www/$username"
+root="/home/$current_user/www/$username/$dir"
+parent="/home/$current_user/www/$username"
 block="/etc/nginx/sites-available/$username"
 
 # # Create the Document Root directory
