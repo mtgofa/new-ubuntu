@@ -1,7 +1,7 @@
 #!/bin/sh
 
 username=$1
-version=${2:-'8.1'}
+version=${2:-'8.3'}
 ownership=${3:-'test'}
 dir=${4:-'public'}
 domain=$username.$ownership
